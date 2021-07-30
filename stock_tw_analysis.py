@@ -11,7 +11,7 @@ IOModuleFile = "stock_tw_io"
 IOModule = importlib.import_module(IOModuleFile)
 
 
-def fetch_all_stock_data():
+def fetch_all_stock_data(): #read new to old
     stockdata=list()
     year = 2020
     month = 7
@@ -39,6 +39,6 @@ def fetch_all_stock_data():
 def draw_all_month_moving_average(stockdata):
     
         
-fetch_all_stock_data()
+stockdaya = fetch_all_stock_data()
 
 
