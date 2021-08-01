@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from sklearn.datasets import make_regression
 from dataclasses import dataclass
 import codecs
+import os
+from typing import List
   
 class a_day_stock():
     def __init__(self):
@@ -40,8 +42,8 @@ class a_day_stock_analysis():
 class a_stock_info():
     def __init__(self):
         self.name=""
-        self.history=list()
-        self.analysis=list()
+        self.history=List[a_day_stock]
+        self.analysis=List[a_day_stock_analysis]
  	
 def stock_csv_reader(filestr,datestr):
     day_stock_list=list()
@@ -68,8 +70,8 @@ def stock_csv_reader(filestr,datestr):
             if str_list[7].replace('.','',1).isdigit() and str_list[7].count('.') < 2:day_stock.day_stock_detail.minprice=float(str_list[7])
             if str_list[8].replace('.','',1).isdigit() and str_list[8].count('.') < 2:day_stock.day_stock_detail.endprice=float(str_list[8])
             day_stock_list.append(day_stock)
-            if(day_stock.code=="1101"): 
-                print(datestr+' '+str_list[7])
+            #if(day_stock.code=="1101"): 
+                #print(datestr+' '+str_list[7])
     return day_stock_list
 
 def fetch_all_stock_data(): #read new to old
@@ -94,8 +96,9 @@ def fetch_all_stock_data(): #read new to old
         
         datestr = str(year * 10000 + month * 100 + date)
         filestr = '.\\stockdata\\stock'+datestr+'.csv'
-        if (not path.exists(filestr)): continue
+        if (not os.path.exists(filestr)): continue
         stockdata.append(stock_csv_reader(filestr,datestr))
+    return stockdata
 
 def transfer_day_struct_2_stock_stock(read_stock_info): #input:  list: a_day_stock_with_title
     stocks_data=dict()
@@ -109,9 +112,11 @@ def transfer_day_struct_2_stock_stock(read_stock_info): #input:  list: a_day_sto
         for j in range (1,len(read_stock_info[i])):
             if (read_stock_info[i][j].code in stocks_data):
                 stocks_data[read_stock_info[i][j].code].history.append(read_stock_info[i][j].day_stock_detail)
+                #if(read_stock_info[i][j].code=="1101"): 
+                    #print(read_stock_info[i][j].day_stock_detail.endprice)
     return stocks_data
         
 
 def plot_a_stock_over_all_data(startdate,enddate,stockcode):
-    
+    print('plot_a_stock_over_all_data')
 

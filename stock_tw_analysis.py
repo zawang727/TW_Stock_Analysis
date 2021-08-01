@@ -10,35 +10,18 @@ from os import path
 IOModuleFile = "stock_tw_io"
 IOModule = importlib.import_module(IOModuleFile)
 
-
-def fetch_all_stock_data(): #read new to old
-    stockdata=list()
-    year = 2020
-    month = 7
-    date = 28
-    dayinmonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+def five_days_MA_generation_for_a_stock(a_stock_info):
+    five_days_list = list()
+    for i in range (0,len(a_stock_info.history)):
+        five_days_list.append(a_stock_info.history[i].endprice)
+        if (len(five_days_list)>5): del five_days_list[0]
+        a_stock_info.analysis.append(IOModule.a_day_stock_analysis());
+        a_stock_info.analysis[i]=sum(five_days_list)/float(len(five_days_list))
     
-    for day in range(0, 900):
-        #day decrease
-        if(date > 1):
-            date = date - 1
-        else:
-            if (month > 1):
-                month = month -1
-                date = dayinmonth[(month - 1)]
-            else:
-                year = year - 1
-                month = 12
-                date = dayinmonth[(month - 1)]
-        
-        datestr = str(year * 10000 + month * 100 + date)
-        filestr = '.\\stockdata\\stock'+datestr+'.csv'
-        if (not path.exists(filestr)): continue
-        stockdata.append(IOModule.stock_csv_reader(filestr,datestr))
-        
-def draw_all_month_moving_average(stockdata):
-    
-        
-stockdaya = fetch_all_stock_data()
 
+stockdata_in_days = IOModule.fetch_all_stock_data()
+stockdata_in_stock_struct = IOModule.transfer_day_struct_2_stock_stock(stockdata_in_days)
+for i in stockdata_in_stock_struct.keys():
+    five_days_MA_generation_for_a_stock(stockdata_in_stock_struct[i])
+    
 
