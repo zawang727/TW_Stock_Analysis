@@ -128,9 +128,13 @@ def analysis_generation():
         twoh_fifty_days_max_generation(stockdata_in_stock_struct[i])
         twoh_fifty_days_min_generation(stockdata_in_stock_struct[i])
     return stockdata_in_stock_struct
-        
+
+def if_current_switch_higher_five_days_MA(single_stock_data):
+    return False
+    
+
 tw_stockdata = analysis_generation()
-IOModule.plot_a_stock_over_all_data(20200723,20210723,tw_stockdata['2330'])
+#IOModule.plot_a_stock_over_all_data(20201223,20210723,tw_stockdata['2330'])
     
     
 

@@ -139,23 +139,25 @@ def plot_a_stock_over_all_data(startdate,enddate,a_stock_info):
         if(a_stock_info.history[i].date==int(enddate)): 
             enddate_index = i
             end_price_list.append(a_stock_info.history[i].endprice)
-            ten_days_MA.append(a_stock_info.history[i].ten_days_MA)
-            twnty_days_MA.append(a_stock_info.history[i].twnty_days_MA)
-            sixty_days_MA.append(a_stock_info.history[i].sixty_days_MA)
+            ten_days_MA.append(a_stock_info.analysis[i].ten_days_MA)
+            twnty_days_MA.append(a_stock_info.analysis[i].twnty_days_MA)
+            sixty_days_MA.append(a_stock_info.analysis[i].sixty_days_MA)
             datstr=str(a_stock_info.history[i].date)[0:4]+'-'+str(a_stock_info.history[i].date)[4:6]+'-'+str(a_stock_info.history[i].date)[6:8]
             date_list.append(datetime.datetime(int(datstr[0:4]),int(datstr[5:7]),int(datstr[8:10])))
             break
         if (startdate_index != -1): 
             end_price_list.append(a_stock_info.history[i].endprice)
-            ten_days_MA.append(a_stock_info.history[i].ten_days_MA)
-            twnty_days_MA.append(a_stock_info.history[i].twnty_days_MA)
-            sixty_days_MA.append(a_stock_info.history[i].sixty_days_MA)
+            ten_days_MA.append(a_stock_info.analysis[i].ten_days_MA)
+            twnty_days_MA.append(a_stock_info.analysis[i].twnty_days_MA)
+            sixty_days_MA.append(a_stock_info.analysis[i].sixty_days_MA)
             datstr=str(a_stock_info.history[i].date)[0:4]+'-'+str(a_stock_info.history[i].date)[4:6]+'-'+str(a_stock_info.history[i].date)[6:8]
             date_list.append(datetime.datetime(int(datstr[0:4]),int(datstr[5:7]),int(datstr[8:10])))
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=40))
-    plt.plot(date_list,end_price_list,'r')
+    plt.plot(date_list,end_price_list,color='blue',linewidth=3)
+    plt.plot(date_list,ten_days_MA,'g')
+    plt.plot(date_list,twnty_days_MA,'b')
+    plt.plot(date_list,sixty_days_MA,'y')
     plt.gcf().autofmt_xdate()
-    plt.legend()
     plt.show()
 
