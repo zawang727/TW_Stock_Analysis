@@ -2,11 +2,13 @@
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from sklearn.datasets import make_regression
 from dataclasses import dataclass
 import codecs
 import os
-from typing import List
+import datetime
+
   
 class a_day_stock():
     def __init__(self):
@@ -41,9 +43,10 @@ class a_day_stock_analysis():
  
 class a_stock_info():
     def __init__(self):
+        self.code=""
         self.name=""
-        self.history=List[a_day_stock]
-        self.analysis=List[a_day_stock_analysis]
+        self.history=list() #class a_day_stock()
+        self.analysis=list() #class a_day_stock_analysis()
  	
 def stock_csv_reader(filestr,datestr):
     day_stock_list=list()
@@ -75,13 +78,14 @@ def stock_csv_reader(filestr,datestr):
     return day_stock_list
 
 def fetch_all_stock_data(): #read new to old
+    now = datetime.datetime.now()
     stockdata=list()
-    year = 2020
+    year = 2021
     month = 7
-    date = 28
+    date = 26
     dayinmonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     
-    for day in range(0, 900):
+    for day in range(0, 500):
         #day decrease
         if(date > 1):
             date = date - 1
@@ -105,18 +109,53 @@ def transfer_day_struct_2_stock_stock(read_stock_info): #input:  list: a_day_sto
     for i in range (0,len(read_stock_info[0])): #initialize every stock in data
         single_stock_data = a_stock_info()
         single_stock_data.name=read_stock_info[0][i].name
+        single_stock_data.code=read_stock_info[0][i].code
         single_stock_data.history.append(read_stock_info[0][i].day_stock_detail)
+        single_stock_data.analysis.append(a_day_stock_analysis())
         stocks_data[read_stock_info[0][i].code]=single_stock_data
     
-    for i in range (1,len(read_stock_info)):
-        for j in range (1,len(read_stock_info[i])):
-            if (read_stock_info[i][j].code in stocks_data):
-                stocks_data[read_stock_info[i][j].code].history.append(read_stock_info[i][j].day_stock_detail)
-                #if(read_stock_info[i][j].code=="1101"): 
-                    #print(read_stock_info[i][j].day_stock_detail.endprice)
+    for i in range (1,len(read_stock_info)): #day iterations
+        #print('transfer_day_struct_2_stock_stock '+str(i)+' '+str(read_stock_info[i][0].day_stock_detail.date)+ ' '+read_stock_info[i][0].code)
+        for j in range (0,len(read_stock_info[i])): #stock iteration
+            if (stocks_data.get(read_stock_info[i][j].code, 0) == 0): continue
+            stocks_data[read_stock_info[i][j].code].history.append(read_stock_info[i][j].day_stock_detail)
+            stocks_data[read_stock_info[i][j].code].analysis.append(a_day_stock_analysis())
+            #if(read_stock_info[i][j].code=="0050"): 
+                #print(read_stock_info[i][j].day_stock_detail.endprice)
     return stocks_data
         
 
-def plot_a_stock_over_all_data(startdate,enddate,stockcode):
-    print('plot_a_stock_over_all_data')
+def plot_a_stock_over_all_data(startdate,enddate,a_stock_info):
+    startdate_index = -1
+    enddate_index = 0
+    end_price_list = list()
+    date_list = list()
+    ten_days_MA = list()
+    twnty_days_MA = list()
+    sixty_days_MA = list()
+    for i in range (len(a_stock_info.history)-1,0,-1):
+        if(a_stock_info.history[i].date==int(startdate)): 
+            startdate_index = i
+        if(a_stock_info.history[i].date==int(enddate)): 
+            enddate_index = i
+            end_price_list.append(a_stock_info.history[i].endprice)
+            ten_days_MA.append(a_stock_info.history[i].ten_days_MA)
+            twnty_days_MA.append(a_stock_info.history[i].twnty_days_MA)
+            sixty_days_MA.append(a_stock_info.history[i].sixty_days_MA)
+            datstr=str(a_stock_info.history[i].date)[0:4]+'-'+str(a_stock_info.history[i].date)[4:6]+'-'+str(a_stock_info.history[i].date)[6:8]
+            date_list.append(datetime.datetime(int(datstr[0:4]),int(datstr[5:7]),int(datstr[8:10])))
+            break
+        if (startdate_index != -1): 
+            end_price_list.append(a_stock_info.history[i].endprice)
+            ten_days_MA.append(a_stock_info.history[i].ten_days_MA)
+            twnty_days_MA.append(a_stock_info.history[i].twnty_days_MA)
+            sixty_days_MA.append(a_stock_info.history[i].sixty_days_MA)
+            datstr=str(a_stock_info.history[i].date)[0:4]+'-'+str(a_stock_info.history[i].date)[4:6]+'-'+str(a_stock_info.history[i].date)[6:8]
+            date_list.append(datetime.datetime(int(datstr[0:4]),int(datstr[5:7]),int(datstr[8:10])))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=40))
+    plt.plot(date_list,end_price_list,'r')
+    plt.gcf().autofmt_xdate()
+    plt.legend()
+    plt.show()
 

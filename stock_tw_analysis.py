@@ -6,6 +6,7 @@ Created on Wed Jul 28 20:44:55 2021
 """
 import importlib
 from os import path
+from datetime import datetime
 
 IOModuleFile = "stock_tw_io"
 IOModule = importlib.import_module(IOModuleFile)
@@ -126,8 +127,10 @@ def analysis_generation():
         sixty_days_min_generation(stockdata_in_stock_struct[i])
         twoh_fifty_days_max_generation(stockdata_in_stock_struct[i])
         twoh_fifty_days_min_generation(stockdata_in_stock_struct[i])
+    return stockdata_in_stock_struct
         
-analysis_generation()
+tw_stockdata = analysis_generation()
+IOModule.plot_a_stock_over_all_data(20200723,20210723,tw_stockdata['2330'])
     
     
 
