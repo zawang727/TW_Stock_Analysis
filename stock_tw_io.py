@@ -7,9 +7,10 @@ from sklearn.datasets import make_regression
 from dataclasses import dataclass
 import codecs
 import os
-import datetime
+from datetime import datetime
 
-  
+today = datetime.today()
+
 class a_day_stock():
     def __init__(self):
         self.date=0
@@ -78,14 +79,13 @@ def stock_csv_reader(filestr,datestr):
     return day_stock_list
 
 def fetch_all_stock_data(): #read new to old
-    now = datetime.datetime.now()
     stockdata=list()
-    year = 2021
-    month = 7
-    date = 26
+    year = int(today.strftime("%Y"))
+    month = int(today.strftime("%m"))
+    date = int(today.strftime("%d"))
     dayinmonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     
-    for day in range(0, 1000):
+    for day in range(0, 300):
         #day decrease
         if(date > 1):
             date = date - 1
@@ -125,7 +125,7 @@ def transfer_day_struct_2_stock_stock(read_stock_info): #input:  list: a_day_sto
     return stocks_data
         
 
-def plot_a_stock_over_all_data(startdate,enddate,a_stock_info):
+def plot_a_stock_over_all_data_date_based(startdate,enddate,a_stock_info): # This function should ensure the input is a trade day
     startdate_index = -1
     enddate_index = 0
     end_price_list = list()
@@ -133,7 +133,7 @@ def plot_a_stock_over_all_data(startdate,enddate,a_stock_info):
     ten_days_MA = list()
     twnty_days_MA = list()
     sixty_days_MA = list()
-    for i in range (len(a_stock_info.history)-1,0,-1):
+    for i in range (len(a_stock_info.history)-1,-1,-1):
         if(a_stock_info.history[i].date==int(startdate)): 
             startdate_index = i
         if(a_stock_info.history[i].date==int(enddate)): 
@@ -153,8 +153,30 @@ def plot_a_stock_over_all_data(startdate,enddate,a_stock_info):
             datstr=str(a_stock_info.history[i].date)[0:4]+'-'+str(a_stock_info.history[i].date)[4:6]+'-'+str(a_stock_info.history[i].date)[6:8]
             date_list.append(datetime.datetime(int(datstr[0:4]),int(datstr[5:7]),int(datstr[8:10])))
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=40))
-    plt.plot(date_list,end_price_list,color='blue',linewidth=3)
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=5))
+    plt.plot(date_list,end_price_list,color='black',linewidth=3)
+    plt.plot(date_list,ten_days_MA,'g')
+    plt.plot(date_list,twnty_days_MA,'b')
+    plt.plot(date_list,sixty_days_MA,'y')
+    plt.gcf().autofmt_xdate()
+    plt.show()
+    
+def plot_a_stock_over_all_data_index_based(startdate_index,enddate_index,a_stock_info):
+    end_price_list = list()
+    date_list = list()
+    ten_days_MA = list()
+    twnty_days_MA = list()
+    sixty_days_MA = list()
+    for i in range (startdate_index,enddate_index,-1):
+        end_price_list.append(a_stock_info.history[i].endprice)
+        ten_days_MA.append(a_stock_info.analysis[i].ten_days_MA)
+        twnty_days_MA.append(a_stock_info.analysis[i].twnty_days_MA)
+        sixty_days_MA.append(a_stock_info.analysis[i].sixty_days_MA)
+        datstr=str(a_stock_info.history[i].date)[0:4]+'-'+str(a_stock_info.history[i].date)[4:6]+'-'+str(a_stock_info.history[i].date)[6:8]
+        date_list.append(datetime(int(datstr[0:4]),int(datstr[5:7]),int(datstr[8:10])))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=5))
+    plt.plot(date_list,end_price_list,color='black',linewidth=3)
     plt.plot(date_list,ten_days_MA,'g')
     plt.plot(date_list,twnty_days_MA,'b')
     plt.plot(date_list,sixty_days_MA,'y')
