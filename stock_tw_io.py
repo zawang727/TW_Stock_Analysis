@@ -3,7 +3,6 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from sklearn.datasets import make_regression
 from dataclasses import dataclass
 import codecs
 import os
