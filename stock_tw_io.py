@@ -85,7 +85,7 @@ def fetch_all_stock_data(): #read new to old
     date = 26
     dayinmonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     
-    for day in range(0, 500):
+    for day in range(0, 1000):
         #day decrease
         if(date > 1):
             date = date - 1

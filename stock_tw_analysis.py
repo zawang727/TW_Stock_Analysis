@@ -7,6 +7,8 @@ Created on Wed Jul 28 20:44:55 2021
 import importlib
 from os import path
 from datetime import datetime
+import time
+from joblib import Parallel, delayed
 
 IOModuleFile = "stock_tw_io"
 IOModule = importlib.import_module(IOModuleFile)
@@ -110,23 +112,27 @@ def twoh_fifty_days_min_generation(a_stock_info):
              days_list.append(a_stock_info.history[i].minprice)
              if (len(days_list)>days): del days_list[0]
              a_stock_info.analysis[i].twoh_fifty_days_min=min(days_list)  
-        
+     
+def single_stock_analysis(stockdata_in_stock_struct):
+    five_days_MA_generation_for_a_stock(stockdata_in_stock_struct)
+    ten_days_MA_generation_for_a_stock(stockdata_in_stock_struct)
+    twnty_days_MA_generation_for_a_stock(stockdata_in_stock_struct)
+    sixty_days_MA_generation_for_a_stock(stockdata_in_stock_struct)
+    twoh_fifty_MA_generation_for_a_stock(stockdata_in_stock_struct)
+    twnty_days_max_generation(stockdata_in_stock_struct)
+    twnty_days_min_generation(stockdata_in_stock_struct)
+    sixty_days_max_generation(stockdata_in_stock_struct)
+    sixty_days_min_generation(stockdata_in_stock_struct)
+    twoh_fifty_days_max_generation(stockdata_in_stock_struct)
+    twoh_fifty_days_min_generation(stockdata_in_stock_struct)
+    
     
 def analysis_generation():
     stockdata_in_days = IOModule.fetch_all_stock_data()
     stockdata_in_stock_struct = IOModule.transfer_day_struct_2_stock_stock(stockdata_in_days)
+    del stockdata_in_days
     for i in stockdata_in_stock_struct.keys():
-        five_days_MA_generation_for_a_stock(stockdata_in_stock_struct[i])
-        ten_days_MA_generation_for_a_stock(stockdata_in_stock_struct[i])
-        twnty_days_MA_generation_for_a_stock(stockdata_in_stock_struct[i])
-        sixty_days_MA_generation_for_a_stock(stockdata_in_stock_struct[i])
-        twoh_fifty_MA_generation_for_a_stock(stockdata_in_stock_struct[i])
-        twnty_days_max_generation(stockdata_in_stock_struct[i])
-        twnty_days_min_generation(stockdata_in_stock_struct[i])
-        sixty_days_max_generation(stockdata_in_stock_struct[i])
-        sixty_days_min_generation(stockdata_in_stock_struct[i])
-        twoh_fifty_days_max_generation(stockdata_in_stock_struct[i])
-        twoh_fifty_days_min_generation(stockdata_in_stock_struct[i])
+        single_stock_analysis(stockdata_in_stock_struct[i])
     return stockdata_in_stock_struct
 
 def if_current_switch_higher_five_days_MA(single_stock_data):
