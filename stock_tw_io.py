@@ -8,6 +8,7 @@ import codecs
 import os
 from datetime import datetime
 
+fullpath='C:\\Users\\RogerWang\\Desktop\\StockProject'
 today = datetime.today()
 
 class a_day_stock():
@@ -52,6 +53,7 @@ def stock_csv_reader(filestr,datestr):
     day_stock_list=list()
     fp=codecs.open(filestr,'r','utf-16') 
     strread=fp.readline()
+    #print(strread)
     str_list=list()
     while(True):
         strread= fp.readline()
@@ -66,14 +68,13 @@ def stock_csv_reader(filestr,datestr):
             if str_list[2].isdigit(): day_stock.day_stock_detail.tradeshare=int(str_list[2])
             if str_list[3].isdigit(): day_stock.day_stock_detail.tradecnt=int(str_list[3])
             if(day_stock.day_stock_detail.tradecnt == 0): continue
-        #check if string conertion is valid
             if str_list[4].isdigit(): day_stock.day_stock_detail.tradequant=int(str_list[4])
             if str_list[5].replace('.','',1).isdigit() and str_list[5].count('.') < 2: day_stock.day_stock_detail.iniprice=float(str_list[5])
             if str_list[6].replace('.','',1).isdigit() and str_list[6].count('.') < 2: day_stock.day_stock_detail.maxprice=float(str_list[6])
             if str_list[7].replace('.','',1).isdigit() and str_list[7].count('.') < 2:day_stock.day_stock_detail.minprice=float(str_list[7])
             if str_list[8].replace('.','',1).isdigit() and str_list[8].count('.') < 2:day_stock.day_stock_detail.endprice=float(str_list[8])
             day_stock_list.append(day_stock)
-            #if(day_stock.code=="1101"): 
+            #if(day_stock.code=="0054"): 
                 #print(datestr+' '+str_list[7])
     return day_stock_list
 
@@ -84,7 +85,7 @@ def fetch_all_stock_data(): #read new to old
     date = int(today.strftime("%d"))
     dayinmonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     
-    for day in range(0, 300):
+    for day in range(0, 400):
         #day decrease
         if(date > 1):
             date = date - 1
@@ -96,10 +97,11 @@ def fetch_all_stock_data(): #read new to old
                 year = year - 1
                 month = 12
                 date = dayinmonth[(month - 1)]
-        
         datestr = str(year * 10000 + month * 100 + date)
         filestr = '.\\stockdata\\stock'+datestr+'.csv'
+        #print(filestr)
         if (not os.path.exists(filestr)): continue
+        #print(filestr)
         stockdata.append(stock_csv_reader(filestr,datestr))
     return stockdata
 

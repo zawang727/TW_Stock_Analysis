@@ -143,7 +143,7 @@ def if_all_above_MA(single_stock_data):
     if (single_stock_data.history[0].endprice>single_stock_data.analysis[0].sixty_days_MA): score+=3.
     if (single_stock_data.history[0].endprice>single_stock_data.analysis[0].twoh_fifty_days_MA): score+=1.
     if (single_stock_data.history[0].endprice*1.01 >single_stock_data.analysis[0].twnty_days_max): score+=1.
-    if (single_stock_data.history[0].endprice*1.01 >single_stock_data.analysis[0].sixty_days_max): score+=1.5
+    if (single_stock_data.history[0].endprice*1.01 >single_stock_data.analysis[0].sixty_days_max): score+=1
     if (single_stock_data.history[0].endprice*1.01 >single_stock_data.analysis[0].twoh_fifty_days_max): score+=2.
     return score
     
