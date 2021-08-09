@@ -27,7 +27,7 @@ def send_email(content):
             print("Error message: ", e)
 
 def daily_work():
-    if (datetime.now().day >=5): 
+    if (datetime.now().weekday() >=5): 
         return 0 #stop if holiday
     WebCrawModule.craw_day()
     tw_stockdata = AnalysisModule.analysis_generation()
@@ -44,9 +44,7 @@ def daily_work():
     content["from"] = "zawang727@gapp.nthu.edu.tw"  # 寄件者
     content.attach(MIMEText(text_result))  # 郵件純文字內容
     content.attach(MIMEText('Score: \n+1: \nAbove 5 days MA, 10 days MA, 250 days MA\nIs month or season max\n+3:\nAbove 20 days MA\nIs 250 days max\n+2:\nAbove season MA'))  # 郵件純文字內容
-    content["to"] = "zawang727@gapp.nthu.edu.tw"  # 收件者
-    content["to"] = "zoe450283@gmail.com"  # 收件者
-    content["to"] = "StrooWang@gmail.com"  # 收件者
+    content["to"] = "<zawang727@gapp.nthu.edu.tw> " + "<zoe450283@gmail.com> " + "<StrooWang@gmail.com> " + "<zawang727@gmail.com> "  # 收件者
     send_email(content)
     
     
