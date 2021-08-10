@@ -9,6 +9,7 @@ from os import path
 from datetime import datetime
 import time
 from joblib import Parallel, delayed
+import math
 
 IOModuleFile = "stock_tw_io"
 IOModule = importlib.import_module(IOModuleFile)
@@ -145,6 +146,15 @@ def if_all_above_MA(single_stock_data):
     if (single_stock_data.history[0].endprice*1.01 >single_stock_data.analysis[0].twnty_days_max): score+=1.
     if (single_stock_data.history[0].endprice*1.01 >single_stock_data.analysis[0].sixty_days_max): score+=1
     if (single_stock_data.history[0].endprice*1.01 >single_stock_data.analysis[0].twoh_fifty_days_max): score+=2.
+    return score
+
+def if_MA_overlap_5_20_60(single_stock_data):
+    score = 0.
+    avg = (single_stock_data.analysis[0].five_days_MA+single_stock_data.analysis[0].twnty_days_MA+single_stock_data.analysis[0].sixty_days_MA)/3
+    score = math.sqrt(pow(single_stock_data.analysis[0].five_days_MA-avg,2)+pow(single_stock_data.analysis[0].twnty_days_MA-avg,2)+pow(single_stock_data.analysis[0].sixty_days_MA-avg,2))
+    score = score/avg
+    if (((single_stock_data.analysis[0].twnty_days_max-single_stock_data.analysis[0].twnty_days_min)/avg)<0.1): score+=0.1 #no fluctuation panality
+    if ((((single_stock_data.analysis[0].twnty_days_max+single_stock_data.analysis[0].twnty_days_min)/2)-single_stock_data.history[0].endprice)>0.): score+=0.1 #price drop panality
     return score
     
 

@@ -29,14 +29,21 @@ def send_email(content):
 def daily_work():
     if (datetime.now().weekday() >=5): 
         return 0 #stop if holiday
-    WebCrawModule.craw_day()
+    WebCrawModule.craw_day(days = 1)
     tw_stockdata = AnalysisModule.analysis_generation()
     text_result='Strong growing stock pick:\n'
     for i in tw_stockdata.keys():
         score = AnalysisModule.if_all_above_MA(tw_stockdata[i])
         if(score>11.6): 
-            print(i +' '+ tw_stockdata[i].name+ ' score '+ str(score))
+            #print(i +' '+ tw_stockdata[i].name+ ' score '+ str(score))
             text_result += (i +' '+ tw_stockdata[i].name+ ' score '+ str(score) +'\n')
+            #IOModule.plot_a_stock_over_all_data_index_based(30,0,tw_stockdata[i])
+    text_result+='\nMA overlap:\n'
+    for i in tw_stockdata.keys():
+        score = AnalysisModule.if_MA_overlap_5_20_60(tw_stockdata[i])
+        if (score<0.02):
+            #print(i +' '+ tw_stockdata[i].name+ ' score '+ str(score))
+            text_result += (i +' '+ tw_stockdata[i].name+ ' std '+ str(score) +'\n')
             #IOModule.plot_a_stock_over_all_data_index_based(30,0,tw_stockdata[i])
     print(text_result)
     content = MIMEMultipart()  # 建立MIMEMultipart物件
