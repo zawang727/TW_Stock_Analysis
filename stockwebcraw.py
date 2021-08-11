@@ -5,6 +5,7 @@ import numpy as np
 import codecs
 from datetime import datetime
 import shutil
+import os
 
 today = datetime.today()
 
@@ -40,7 +41,8 @@ def craw_day(days=1,year=int(today.strftime("%Y")),month=int(today.strftime("%m"
             pfile = codecs.open(filestr,'w','utf-16')
             pfile.write(csvstr)
             pfile.close()  
-            shutil.move('./'+ filestr , './stockdata/'+ filestr)
+            sourcename = os.path.dirname(__file__)
+            shutil.move(sourcename+'/'+ filestr , sourcename + '/stockdata/'+ filestr)
         #day decrease
         if(date > 1):
             date = date - 1
